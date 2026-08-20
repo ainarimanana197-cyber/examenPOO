@@ -1,6 +1,7 @@
 package org.example.examenpoo.controllers;
 
 
+import org.example.examenpoo.models.AccountBalance;
 import org.example.examenpoo.models.Transaction;
 import org.example.examenpoo.models.TransactionRequest;
 import org.example.examenpoo.services.TransactionService;
@@ -27,5 +28,9 @@ public class TransactionController {
     public ResponseEntity<Transaction> createTransaction(@RequestBody TransactionRequest request) {
         Transaction created = transactionService.createTransaction(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+    @GetMapping("/{id}/balance")
+    public AccountBalance getAccountBalance(@PathVariable String id) {
+        return transactionService.getAccountBalance(id);
     }
 }

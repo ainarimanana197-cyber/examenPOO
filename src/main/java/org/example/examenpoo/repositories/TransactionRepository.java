@@ -3,6 +3,7 @@ package org.example.examenpoo.repositories;
 import org.example.examenpoo.models.Transaction;
 import org.example.examenpoo.models.TransactionType;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +12,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class TransactionRepository {
 
-    private final String url = "jdbc:postgresql://localhost:5432/tp_db";
+    private final String url = "jdbc:postgresql://localhost:5432/POO";
     private final String user = "postgres";
-    private final String password = "postgres";
+    private final String password = "12345678";
 
     public List<Transaction> findByType(TransactionType type) {
 
@@ -91,5 +92,28 @@ public class TransactionRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    public BigDecimal calculateBalance(String accountId) {
+        String sql = "SELECT " +
+                "COALESCE(SUM(CASE WHEN transaction_type = 'IN' THEN amount ELSE 0 END), 0) - " +
+                "COALESCE(SUM(CASE WHEN transaction_type = 'OUT' THEN amount ELSE 0 END), 0) AS balance " +
+                "FROM transaction WHERE account_id = ?";
+
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, accountId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBigDecimal("balance");
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return BigDecimal.ZERO;
     }
 }

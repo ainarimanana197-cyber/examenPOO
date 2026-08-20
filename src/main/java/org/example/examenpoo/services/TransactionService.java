@@ -1,11 +1,13 @@
 package org.example.examenpoo.services;
 
+import org.example.examenpoo.models.AccountBalance;
 import org.example.examenpoo.models.Transaction;
 import org.example.examenpoo.models.TransactionRequest;
 import org.example.examenpoo.models.TransactionType;
 import org.example.examenpoo.repositories.TransactionRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -40,5 +42,9 @@ public class TransactionService {
 
         transactionRepository.save(transaction);
         return transaction;
+    }
+    public AccountBalance getAccountBalance(String accountId) {
+        BigDecimal balance = transactionRepository.calculateBalance(accountId);
+        return new AccountBalance(accountId, balance);
     }
 }
