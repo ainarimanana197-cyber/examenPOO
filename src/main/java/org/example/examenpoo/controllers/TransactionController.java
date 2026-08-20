@@ -2,10 +2,13 @@ package org.example.examenpoo.controllers;
 
 
 import org.example.examenpoo.models.Transaction;
+import org.example.examenpoo.services.TransactionService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")

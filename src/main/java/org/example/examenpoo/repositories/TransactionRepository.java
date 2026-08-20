@@ -16,6 +16,7 @@ public class TransactionRepository {
     private final String password = "postgres";
 
     public List<Transaction> findByType(TransactionType type) {
+
         List<Transaction> transactions = new ArrayList<>();
         String sql = "SELECT id, created_at, transaction_type, amount, reason, account_id " +
                 "FROM transaction WHERE transaction_type = ?";
@@ -27,15 +28,7 @@ public class TransactionRepository {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Transaction t = new Transaction(
-                            rs.getString("id"),
-                            rs.getTimestamp("created_at").toInstant(),
-                            TransactionType.valueOf(rs.getString("transaction_type")),
-                            rs.getBigDecimal("amount"),
-                            rs.getString("reason"),
-                            rs.getString("account_id")
-                    );
-                    transactions.add(t);
+                    transactions.add(mapRow(rs));
                 }
             }
 
@@ -44,5 +37,39 @@ public class TransactionRepository {
         }
 
         return transactions;
+    }
+
+    public List<Transaction> findByAccountId(String accountId) {
+        List<Transaction> transactions = new ArrayList<>();
+        String sql = "SELECT id, created_at, transaction_type, amount, reason, account_id " +
+                "FROM transaction WHERE account_id = ?";
+
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, accountId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    transactions.add(mapRow(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return transactions;
+    }
+
+    private Transaction mapRow(ResultSet rs) throws SQLException {
+        return new Transaction(
+                rs.getString("id"),
+                rs.getTimestamp("created_at").toInstant(),
+                TransactionType.valueOf(rs.getString("transaction_type")),
+                rs.getBigDecimal("amount"),
+                rs.getString("reason"),
+                rs.getString("account_id")
+        );
     }
 }
