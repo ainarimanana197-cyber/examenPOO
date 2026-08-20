@@ -72,4 +72,24 @@ public class TransactionRepository {
                 rs.getString("account_id")
         );
     }
+    public void save(Transaction transaction) {
+        String sql = "INSERT INTO transaction (id, created_at, transaction_type, amount, reason, account_id) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, transaction.id());
+            stmt.setTimestamp(2, Timestamp.from(transaction.createdAt()));
+            stmt.setString(3, transaction.transactionType().name());
+            stmt.setBigDecimal(4, transaction.amount());
+            stmt.setString(5, transaction.reason());
+            stmt.setString(6, transaction.accountId());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

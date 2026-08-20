@@ -2,11 +2,11 @@ package org.example.examenpoo.controllers;
 
 
 import org.example.examenpoo.models.Transaction;
+import org.example.examenpoo.models.TransactionRequest;
 import org.example.examenpoo.services.TransactionService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,5 +22,10 @@ public class TransactionController {
     @GetMapping
     public List<Transaction> getTransaction(@RequestParam String type) {
         return transactionService.getTransactionsByType(type);
+    }
+    @PostMapping
+    public ResponseEntity<Transaction> createTransaction(@RequestBody TransactionRequest request) {
+        Transaction created = transactionService.createTransaction(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 }
