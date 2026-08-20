@@ -10,7 +10,7 @@ postgres(# id VARCHAR(36) PRIMARY KEY,
 postgres(# account_type AccountType NOT NULL
 postgres(# );
 CREATE TABLE
-postgres=# CREATE TABLE Transactions
+postgres=# CREATE TABLE Transaction
 postgres-# (
 postgres(# id VARCHAR(36) PRIMARY KEY,
 postgres(# created_at TIMESTAMP NOT NULL DEFAULT now(),
